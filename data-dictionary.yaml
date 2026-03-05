@@ -6,6 +6,7 @@ tables:
       (USGS) and the U.S. Fish and Wildlife Service (USFWS).
     source:
       parquet: otters.parquet
+      url: https://doi.org/10.5066/P9Q5PD3Y
     fields:
       - name: otter_no
         type: string
