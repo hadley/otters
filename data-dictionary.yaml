@@ -5,7 +5,7 @@ tables:
       captured or collected in Alaska, 1947-2019 by the U.S. Geological Survey
       (USGS) and the U.S. Fish and Wildlife Service (USFWS).
     source:
-      csv: seot_morphometricsReproStatus_ak_monson.csv
+      parquet: otters.parquet
     fields:
       - name: OTTER NO
         type: string
