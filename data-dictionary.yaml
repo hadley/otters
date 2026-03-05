@@ -86,49 +86,49 @@ tables:
       - name: WEIGHT
         type: number(quantity)
         description: >
-          Weight of otter in kilograms. Range: 0.8 to 45.4. -9 = no data.
+          Weight of otter in kilograms. Range: 0.8 to 45.4.
 
       - name: TAIL_LGTH_1
         type: number(quantity)
         description: >
           Length of tail in centimeters; first replicate measurement.
-          Range: 0 to 313.8. -9 = no data.
+          Range: 0 to 313.8.
 
       - name: TAIL_LGTH_2
         type: number(quantity)
         description: >
           Length of tail in centimeters; second replicate measurement.
-          Range: 21.5 to 37.0. -9 = no data.
+          Range: 21.5 to 37.0.
 
       - name: TAIL_LGTH_3
         type: number(quantity)
         description: >
           Length of tail in centimeters; third replicate measurement.
-          Range: 22.0 to 37.0. -9 = no data.
+          Range: 22.0 to 37.0.
 
       - name: mean_tail_lgth
         type: number(quantity)
         description: >
           Mean of replicate tail length measurements in centimeters.
-          Range: 15.5 to 172.9. -9 = no data.
+          Range: 15.5 to 172.9.
 
       - name: LGTH1
         type: number(quantity)
         description: >
           Length of otter including tail in centimeters; first replicate
-          measurement. Range: 40.2 to 155.9. -9 = no data.
+          measurement. Range: 40.2 to 155.9.
 
       - name: LGTH2
         type: number(quantity)
         description: >
           Length of otter including tail in centimeters; second replicate
-          measurement. Range: 90.0 to 146.5. -9 = no data.
+          measurement. Range: 90.0 to 146.5.
 
       - name: LGTH3
         type: number(quantity)
         description: >
           Length of otter including tail in centimeters; third replicate
-          measurement. Range: 102.2 to 143.7. -9 = no data.
+          measurement. Range: 102.2 to 143.7.
 
       - name: curvilinear_correction
         type: enum<1, 0.974>
@@ -141,64 +141,63 @@ tables:
         type: number(quantity)
         description: >
           Mean of replicate otter length measurements in centimeters.
-          Range: 40.2 to 155.9. -9 = no data.
+          Range: 40.2 to 155.9.
 
       - name: true_standard_lgth
         type: number(quantity)
         description: >
           Mean length multiplied by curvilinear correction factor, in
-          centimeters. Range: 40.2 to 151.9. -9 = no data.
+          centimeters. Range: 40.2 to 151.9.
 
       - name: body_lgth
         type: number(quantity)
         description: >
           Body length not including tail (true_standard_lgth -
           mean_tail_lgth) in centimeters. Range: -43.4 to 115.2.
-          -9 = no data.
+         .
 
       - name: CURVE_LGTH1
         type: number(quantity)
         description: >
           Curvilinear length of otter including tail in centimeters; first
-          replicate measurement. Range: 47.0 to 160.0. -9 = no data.
+          replicate measurement. Range: 47.0 to 160.0.
 
       - name: CURVE_LGTH2
         type: number(quantity)
         description: >
           Curvilinear length of otter including tail in centimeters; second
-          replicate measurement. Range: 111.5 to 166.0. -9 = no data.
+          replicate measurement. Range: 111.5 to 166.0.
 
       - name: GIRTH1
         type: number(quantity)
         description: >
           Circumference of chest at xiphoid in centimeters; first replicate
-          measurement. Range: 29.5 to 96.5. -9 = no data.
+          measurement. Range: 29.5 to 96.5.
 
       - name: GIRTH2
         type: number(quantity)
         description: >
           Circumference of chest at xiphoid in centimeters; second replicate
-          measurement. Range: 74.5 to 78.0. -9 = no data.
+          measurement. Range: 74.5 to 78.0.
 
       - name: mean_girth
         type: number(quantity)
         description: >
           Mean of replicate girth measurements in centimeters.
-          Range: 29.5 to 96.5. -9 = no data.
+          Range: 29.5 to 96.5.
 
       - name: PAW
         type: number(quantity)
         description: >
           Width of front paw at widest point in millimeters.
-          Range: 34.0 to 63.0. -9 = no data.
+          Range: 34.0 to 63.0.
 
       - name: W_PUP
-        type: enum<., N, U, D, Y>
+        type: enum<N, U, D, Y>
         description: >
           Whether an adult female was with a dependent pup at capture or
-          collection. . = not applicable; N = not with dependent pup;
-          U = unknown; D = the individual is the dependent pup;
-          Y = with dependent pup.
+          collection. N = not with dependent pup; U = unknown;
+          D = the individual is the dependent pup; Y = with dependent pup.
 
       - name: PUP_NUMBER
         type: string
@@ -206,100 +205,97 @@ tables:
           Unique identifier of pup, if present and marked.
 
       - name: PUP_SEX
-        type: enum<., F, M, U>
+        type: enum<F, M, U>
         description: >
-          Sex of pup. . = not applicable; F = Female; M = Male; U = Unknown.
+          Sex of pup. F = Female; M = Male; U = Unknown.
 
       - name: PUP_WGHT
         type: number(quantity)
         description: >
-          Weight of pup in kilograms. Range: 0.9 to 28.0. -9 = no data.
+          Weight of pup in kilograms. Range: 0.9 to 28.0.
 
       - name: PUP_LGTH
         type: number(quantity)
         description: >
-          Length of pup in centimeters. Range: 45.8 to 113.5. -9 = no data.
+          Length of pup in centimeters. Range: 45.8 to 113.5.
 
       - name: PUP_CURVLGTH
         type: number(quantity)
         description: >
           Curvilinear length of pup in centimeters. Range: 47.0 to 113.0.
-          -9 = no data.
+         .
 
       - name: FETUS_PRES
-        type: enum<N, ., Y, M>
+        type: enum<N, Y, M>
         description: >
           Whether fetus was present at time of collection. N = no fetus
-          present; . = not applicable; Y = fetus present; M = multiple
-          fetuses present.
+          present; Y = fetus present; M = multiple fetuses present.
 
       - name: FETUS_NUM
         type: number(quantity)
         description: >
-          Number of fetuses present. Range: 0 to 3. -9 = no data.
+          Number of fetuses present. Range: 0 to 3.
 
       - name: FETUS_SEX
-        type: enum<., M, F, U>
+        type: enum<M, F, U>
         description: >
-          Sex of fetus. . = not applicable; M = Male; F = Female;
-          U = Unknown.
+          Sex of fetus. M = Male; F = Female; U = Unknown.
 
       - name: FETUS_WT
         type: number(quantity)
         description: >
-          Weight of fetus in grams. Range: 0 to 2112.0. -9 = no data.
+          Weight of fetus in grams. Range: 0 to 2112.0.
 
       - name: FETUS_LTH
         type: number(quantity)
         description: >
-          Length of fetus in centimeters. Range: 0.3 to 65.0. -9 = no data.
+          Length of fetus in centimeters. Range: 0.3 to 65.0.
 
       - name: FE_REP_CON
-        type: enum<., IMP, UNI, POS, ANE, PRO, EST, FAI>
+        type: enum<IMP, UNI, POS, ANE, PRO, EST, FAI>
         description: >
-          Female reproductive condition. . = not applicable;
-          IMP = implanted pregnant; UNI = unimplanted pregnant;
-          ANE = anestrous; EST = in estrous; POS, PRO, FAI = undocumented
-          codes.
+          Female reproductive condition. IMP = implanted pregnant;
+          UNI = unimplanted pregnant; ANE = anestrous; EST = in estrous;
+          POS, PRO, FAI = undocumented codes.
 
       - name: FE_REP_STA
-        type: enum<., N, M, P>
+        type: enum<N, M, P>
         description: >
-          Female reproductive state (collections only). . = not applicable;
-          N = nulliparous; M = multiparous; P = primiparous.
+          Female reproductive state (collections only). N = nulliparous;
+          M = multiparous; P = primiparous.
 
       - name: PREGNANCY_STATUS
-        type: enum<., NP, U, NPP, P, PP, TT>
+        type: enum<NP, U, NPP, P, PP, TT>
         description: >
-          Pregnancy status. . = not applicable; NP = not pregnant at
-          collection or capture; U = unknown; NPP = not palpably pregnant
-          at capture; P = fetus present at collection or palpably pregnant
-          at capture; PP, TT = undocumented codes.
+          Pregnancy status. NP = not pregnant at collection or capture;
+          U = unknown; NPP = not palpably pregnant at capture; P = fetus
+          present at collection or palpably pregnant at capture;
+          PP, TT = undocumented codes.
 
       - name: CAN_DIA
         type: number(quantity)
         description: >
           Diameter of canine tooth at gum line (widest dimension) in
-          millimeters. Range: 2.9 to 11.1. -9 = no data.
+          millimeters. Range: 2.9 to 11.1.
 
       - name: FINAL_AGE
         type: number(ordinal)
         description: >
           Age of otter at time of capture or collection in years, based on
           known age, tooth cementum age, or field age estimate.
-          Range: 0 to 23. -9 = no data.
+          Range: 0 to 23.
 
       - name: AGE_CATEGORY
-        type: enum<0, 1.5, 7, 13, -9.0>
+        type: enum<0, 1.5, 7, 13>
         description: >
           Age category of otter. 0 = less than 1 year; 1.5 = 1-2 years;
-          7 = 3-10 years; 13 = greater than 10 years; -9.0 = no data.
+          7 = 3-10 years; 13 = greater than 10 years.
 
       - name: BACULA_LGTH
         type: number(quantity)
         description: >
           Baculum length in centimeters (males only).
-          Range: 2.2 to 163.4. -9 = no data.
+          Range: 2.2 to 163.4.
 
       - name: comments
         type: string
