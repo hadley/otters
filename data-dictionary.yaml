@@ -25,8 +25,7 @@ tables:
       - name: date
         type: date
         description: >
-          Date of capture or collection (YYYY-MM-DD). Range: 1947-05-02 to
-          2019-05-30.
+          Date of capture or collection. Range: 1947-05-02 to 2019-05-30.
 
       - name: year
         type: number(ordinal)

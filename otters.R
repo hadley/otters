@@ -24,6 +24,9 @@ for (col in str_cols) {
   otters[[col]][otters[[col]] == "."] <- NA
 }
 
+# Parse dates
+otters$DATE <- as.Date(otters$DATE)
+
 # Standardise column names to lower_snake_case
 names(otters) <- tolower(gsub("[. ]+", "_", names(otters)))
 
