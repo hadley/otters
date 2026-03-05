@@ -10,7 +10,7 @@ tables:
     fields:
       - name: otter_no
         type: string
-        constraints: [required, unique]
+        constraints: [required]
         description: >
           Unique identifier of each individual measured otter. Assigned by
           researchers with a variety of naming conventions across locations
@@ -29,11 +29,6 @@ tables:
         type: date
         description: >
           Date of capture or collection. Range: 1947-05-02 to 2019-05-30.
-
-      - name: year
-        type: number(ordinal)
-        description: >
-          Year of capture or collection. Range: 1947 to 2019.
 
       - name: location
         type: string

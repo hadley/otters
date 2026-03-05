@@ -27,8 +27,12 @@ for (col in str_cols) {
 # Parse dates
 otters$DATE <- as.Date(otters$DATE)
 
-# Drop constant column
+# Drop columns
 otters$STATE <- NULL
+otters$YEAR <- NULL
+
+# Fix zero fetus weight
+otters$FETUS_WT[otters$FETUS_WT == 0] <- NA
 
 # Standardise column names to lower_snake_case
 names(otters) <- tolower(gsub("[. ]+", "_", names(otters)))
