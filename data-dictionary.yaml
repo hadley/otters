@@ -41,11 +41,6 @@ tables:
           Place name of location of capture or collection. Derived from local
           geographic place names.
 
-      - name: state
-        type: enum<Alaska>
-        description: >
-          State (in USA) of capture or collection.
-
       - name: region
         type: enum<west aleutians, east aleutians, AK peninsula, kodiak, lower cook inlet, PWS, SE>
         description: |
