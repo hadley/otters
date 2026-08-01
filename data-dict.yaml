@@ -1,0 +1,433 @@
+$version: "0.1.0"
+$learn_more: http://data-dict.tidyverse.org/
+description: >
+  Morphometric measurements and pregnancy/dependency status from sea otters
+  captured or collected in Alaska, 1947-2019 by the U.S. Geological Survey
+  (USGS) and the U.S. Fish and Wildlife Service (USFWS).
+details: >
+  Source: <https://doi.org/10.5066/P9Q5PD3Y>
+
+
+  This is the data exactly as published, so missing values are still encoded
+  with sentinels: `-9` in numeric columns and `.` in text columns.
+tables:
+  - name: otters
+    source:
+      parquet: otters.parquet
+    columns:
+      - name: OTTER.NO
+        type: string
+        constraints: [required]
+        description: >
+          Identifier of each individual measured otter. Assigned by
+          researchers with a variety of naming conventions across locations
+          and time. Not unique: 140 rows repeat an identifier used by an
+          earlier row.
+        examples: ["67001", "70066", "90-044", "KOD-04-135", "SW-155"]
+
+      - name: recap
+        type: enum
+        values:
+          '0': Captured only once
+          '1': Recaptured at least one time
+        description: >
+          Whether the measured otter was captured only once or recaptured at
+          least one time.
+
+      - name: DATE
+        type: string
+        description: >
+          Date of capture or collection, written as an ISO 8601 date.
+        examples: ["1947-05-02", "1967-09-13", "2019-05-30"]
+
+      - name: YEAR
+        type: number(ordinal)
+        range: [1947, 2019]
+        description: >
+          Year of capture or collection. Duplicates the year component of
+          DATE.
+
+      - name: LOCATION
+        type: string
+        description: >
+          Place name of location of capture or collection. Derived from local
+          geographic place names.
+        examples: [adak, chiniak bay, kiska, SE - whale bay, yukon island]
+
+      - name: STATE
+        type: enum
+        values:
+          Alaska: State of Alaska
+        description: >
+          State of capture or collection. Always "Alaska".
+
+      - name: REGION
+        type: enum
+        values:
+          west aleutians: Western Aleutian Islands
+          east aleutians: Eastern Aleutian Islands
+          AK peninsula: Alaska Peninsula
+          kodiak: Kodiak Island
+          lower cook inlet: Lower Cook Inlet
+          PWS: Prince William Sound
+          SE: Southeast Alaska
+        description: >
+          Region within the state of capture or collection (may encompass
+          multiple areas).
+
+      - name: AREA
+        type: enum
+        values:
+          near islands: Near Island group
+          rats: Rat Island group
+          delarofs: Delarof Island group
+          andreanofs: Andreanof Island group
+          fox islands: Fox Island group
+          WAP: Western Alaska Peninsula
+          EAP: Eastern Alaska Peninsula
+          shuyak: Shuyak Island
+          afognak: Afognak Island
+          kodiak: Kodiak Island
+          kachemak: Kachemak Bay
+          WPWS: Western Prince William Sound
+          EPWS: Eastern Prince William Sound
+          NSE: Northern Southeast Alaska
+          CSE: Central Southeast Alaska
+          SSE: Southern Southeast Alaska
+        description: >
+          Area within the state of capture or collection.
+
+      - name: LAT
+        type: number(quantity)
+        range: [51.37, 60.71]
+        description: >
+          Latitude of capture or collection location in decimal degrees
+          (WGS84).
+
+      - name: LONG
+        type: number(quantity)
+        range: [-178.97, 179.40]
+        description: >
+          Longitude of capture or collection location in decimal degrees
+          (WGS84).
+
+      - name: SEX
+        type: enum
+        values: {M: Male, F: Female, U: Unknown}
+        description: >
+          Sex of otter.
+
+      - name: WEIGHT
+        type: number(quantity)
+        range: [-9, 45.4]
+        description: >
+          Weight of otter in kilograms.
+
+      - name: TAIL_LGTH_1
+        type: number(quantity)
+        range: [-9, 37.2]
+        description: >
+          Length of tail in centimeters; first replicate measurement.
+
+      - name: TAIL_LGTH_2
+        type: string
+        description: >
+          Length of tail in centimeters; second replicate measurement. Read
+          as text rather than a number because one value ("27,5") uses a
+          comma as the decimal separator.
+        examples: ["-9", "21.5", "27,5", "37"]
+
+      - name: TAIL_LGTH_3
+        type: number(quantity)
+        range: [-9, 37.0]
+        description: >
+          Length of tail in centimeters; third replicate measurement.
+
+      - name: mean_tail_lgth
+        type: number(quantity)
+        range: [-9, 37.0]
+        description: >
+          Mean of replicate tail length measurements in centimeters.
+
+      - name: LGTH1
+        type: number(quantity)
+        range: [-9, 148.2]
+        description: >
+          Length of otter including tail in centimeters; first replicate
+          measurement.
+
+      - name: LGTH2
+        type: number(quantity)
+        range: [-9, 146.5]
+        description: >
+          Length of otter including tail in centimeters; second replicate
+          measurement.
+
+      - name: LGTH3
+        type: number(quantity)
+        range: [-9, 143.7]
+        description: >
+          Length of otter including tail in centimeters; third replicate
+          measurement.
+
+      - name: curvilinear_correction
+        type: enum
+        values:
+          '1': No correction (standard length)
+          '0.974': Correction for curvilinear length
+        description: >
+          Correction factor for lengths measured as curvilinear instead of
+          standard length.
+
+      - name: mean_lgth
+        type: number(quantity)
+        range: [-9, 148.2]
+        description: >
+          Mean of replicate otter length measurements in centimeters.
+
+      - name: true_standard_lgth
+        type: number(quantity)
+        range: [-9, 155.9]
+        description: >
+          Mean length multiplied by curvilinear correction factor, in
+          centimeters.
+
+      - name: body_lgth
+        type: number(quantity)
+        range: [-9, 115.2]
+        description: >
+          Body length not including tail (true_standard_lgth -
+          mean_tail_lgth) in centimeters.
+
+      - name: CURVE_LGTH1
+        type: number(quantity)
+        range: [-9, 160.0]
+        description: >
+          Curvilinear length of otter including tail in centimeters; first
+          replicate measurement.
+
+      - name: CURVE_LGTH2
+        type: number(quantity)
+        range: [-9, 166.0]
+        description: >
+          Curvilinear length of otter including tail in centimeters; second
+          replicate measurement.
+
+      - name: GIRTH1
+        type: number(quantity)
+        range: [-9, 96.5]
+        description: >
+          Circumference of chest at xiphoid in centimeters; first replicate
+          measurement.
+
+      - name: GIRTH2
+        type: number(quantity)
+        range: [-9, 78.0]
+        description: >
+          Circumference of chest at xiphoid in centimeters; second replicate
+          measurement.
+
+      - name: mean_girth
+        type: number(quantity)
+        range: [-9, 96.5]
+        description: >
+          Mean of replicate girth measurements in centimeters.
+
+      - name: PAW
+        type: number(quantity)
+        range: [-9, 63.0]
+        description: >
+          Width of front paw at widest point in millimeters.
+
+      - name: W_PUP
+        type: enum
+        values:
+          'N': Not with dependent pup
+          'U': Unknown
+          'D': The individual is the dependent pup
+          'Y': With dependent pup
+          '.': Not recorded
+        description: >
+          Whether an adult female was with a dependent pup at capture or
+          collection.
+
+      - name: PUP_NUMBER
+        type: string
+        description: >
+          Identifier of pup, if present and marked.
+        examples: [".", "67002", "92-198", "KOD_04_121", "SO-08-20"]
+
+      - name: PUP_SEX
+        type: enum
+        values: {F: Female, M: Male, U: Unknown, '.': Not recorded}
+        description: >
+          Sex of pup.
+
+      - name: PUP_WGHT
+        type: number(quantity)
+        range: [-9, 28.0]
+        description: >
+          Weight of pup in kilograms.
+
+      - name: PUP_LGTH
+        type: number(quantity)
+        range: [-9, 113.5]
+        description: >
+          Length of pup in centimeters.
+
+      - name: PUP_CURVLGTH
+        type: number(quantity)
+        range: [-9, 113.0]
+        description: >
+          Curvilinear length of pup in centimeters.
+
+      - name: FETUS_PRES
+        type: enum
+        values:
+          'N': No fetus present
+          'Y': Fetus present
+          'M': Multiple fetuses present
+          '.': Not recorded
+        description: >
+          Whether fetus was present at time of collection.
+
+      - name: FETUS_NUM
+        type: number(quantity)
+        range: [-9, 3]
+        description: >
+          Number of fetuses present.
+
+      - name: FETUS_SEX
+        type: enum
+        values: {M: Male, F: Female, U: Unknown, '.': Not recorded}
+        description: >
+          Sex of fetus.
+
+      - name: FETUS_WT
+        type: number(quantity)
+        range: [-9, 2112.0]
+        description: >
+          Weight of fetus in grams. One record reports 0 for a fetus that
+          was recorded as present, a third way of coding a missing
+          measurement.
+
+      - name: FETUS_LTH
+        type: number(quantity)
+        range: [-9, 65.0]
+        description: >
+          Length of fetus in centimeters.
+
+      - name: FE_REP_CON
+        type: enum
+        values:
+          IMP: Implanted pregnant
+          UNI: Unimplanted pregnant
+          ANE: Anestrous
+          EST: In estrous
+          POS: Undocumented
+          PRO: Undocumented
+          FAI: Undocumented
+          '.': Not recorded
+        description: >
+          Female reproductive condition.
+
+      - name: FE_REP_STA
+        type: enum
+        values: {'N': Nulliparous, 'M': Multiparous, 'P': Primiparous, '.': Not recorded}
+        description: >
+          Female reproductive state (collections only).
+
+      - name: PREGNANCY_STATUS
+        type: enum
+        values:
+          NP: Not pregnant at collection or capture
+          U: Unknown
+          NPP: Not palpably pregnant at capture
+          P: Fetus present at collection or palpably pregnant at capture
+          PP: Undocumented
+          '.': Not recorded
+        description: >
+          Pregnancy status.
+
+      - name: CAN_DIA
+        type: number(quantity)
+        range: [-9, 11.1]
+        description: >
+          Diameter of canine tooth at gum line (widest dimension) in
+          millimeters.
+
+      - name: FINAL_AGE
+        type: number(ordinal)
+        range: [-9, 23]
+        description: >
+          Age of otter at time of capture or collection in years, based on
+          known age, tooth cementum age, or field age estimate.
+
+      - name: AGE_CATEGORY
+        type: enum
+        values:
+          '0': Less than 1 year
+          '1.5': 1-2 years
+          '7': 3-10 years
+          '13': Greater than 10 years
+          '-9': Not recorded
+        description: >
+          Age category of otter.
+
+      - name: BACULA_LGTH
+        type: number(quantity)
+        range: [-9, 21.6]
+        description: >
+          Baculum length in centimeters (males only).
+
+      - name: comments
+        type: string
+        description: >
+          Notes about the capture or collection event.
+        examples: [".", "given 92-114", "died summer 1997", "originally 84-001", "pup < 8 wks later but preg missed at capture"]
+
+      - name: Cause_of_death_Capture_method
+        type: enum
+        values:
+          '0': Typical live capture
+          '1': Collected via harvest
+          '4': Measured after some time in captivity
+          '5': Captured off a beach
+        description: >
+          Cause of death or capture method.
+
+relationships:
+  - description: >
+      Links a female otter to her dependent pup's own record. Not all pups
+      have their own row (221 of 389 PUP_NUMBER values match an OTTER.NO).
+    cardinality: one-to-many
+    join: mother.OTTER.NO = pup.PUP_NUMBER
+    aliases:
+      mother: otters
+      pup: otters
+
+glossary:
+  curvilinear length: >
+    Length measured along the curve of the back as the otter lay on its
+    stomach, used primarily during experimental harvests (1967-1971).
+  standard length: >
+    Straight-line length measured as the otter lay on its back, used during
+    early studies (1947-1963) and more recent live captures (1986-2019).
+  true standard length: >
+    Curvilinear length corrected by a factor of 0.974 to make it comparable
+    to standard length measurements.
+  experimental harvest: >
+    Controlled collection of sea otters primarily conducted in the 1960s and
+    1970s for research purposes.
+  nulliparous: >
+    A female that has never given birth.
+  primiparous: >
+    A female that has given birth once.
+  multiparous: >
+    A female that has given birth multiple times.
+  baculum: >
+    A bone found in the penis of male otters, measured as a way to estimate
+    age class.
+  xiphoid: >
+    The lower portion of the sternum (breastbone), used as a landmark for
+    girth measurements.
