@@ -30,4 +30,8 @@ otters$FETUS_WT[otters$FETUS_WT == 0] <- NA
 
 otters$DATE <- as.Date(otters$DATE)
 
+# The CSV mixes upper and lower case, and read.csv turned the space in
+# "OTTER NO" into a period. Use snake_case throughout.
+names(otters) <- tolower(gsub(".", "_", names(otters), fixed = TRUE))
+
 write_parquet(otters, "otters.parquet")
