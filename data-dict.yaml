@@ -36,26 +36,12 @@ tables:
         description: >
           Date of capture or collection.
 
-      - name: year
-        type: number(ordinal)
-        range: [1947, 2019]
-        description: >
-          Year of capture or collection. Duplicates the year component of
-          date.
-
       - name: location
         type: string
         description: >
           Place name of location of capture or collection. Derived from local
           geographic place names.
         examples: [adak, chiniak bay, kiska, SE - whale bay, yukon island]
-
-      - name: state
-        type: enum
-        values:
-          Alaska: State of Alaska
-        description: >
-          State of capture or collection. Always "Alaska".
 
       - name: region
         type: enum

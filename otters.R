@@ -34,4 +34,8 @@ otters$DATE <- as.Date(otters$DATE)
 # "OTTER NO" into a period. Use snake_case throughout.
 names(otters) <- tolower(gsub(".", "_", names(otters), fixed = TRUE))
 
+# state is "Alaska" in every row, and year just repeats the year of date.
+otters$state <- NULL
+otters$year <- NULL
+
 write_parquet(otters, "otters.parquet")
