@@ -28,4 +28,6 @@ otters$TAIL_LGTH_2[otters$TAIL_LGTH_2 == "-9"] <- NA
 # One fetus is recorded as present but weighing 0 g.
 otters$FETUS_WT[otters$FETUS_WT == 0] <- NA
 
+otters$DATE <- as.Date(otters$DATE)
+
 write_parquet(otters, "otters.parquet")

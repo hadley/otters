@@ -31,10 +31,10 @@ tables:
           least one time.
 
       - name: DATE
-        type: string
+        type: date
+        range: [1947-05-02, 2019-05-30]
         description: >
-          Date of capture or collection, written as an ISO 8601 date.
-        examples: ["1947-05-02", "1967-09-13", "2019-05-30"]
+          Date of capture or collection.
 
       - name: YEAR
         type: number(ordinal)
