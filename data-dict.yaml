@@ -112,12 +112,10 @@ tables:
           Length of tail in centimeters; first replicate measurement.
 
       - name: tail_lgth_2
-        type: string
+        type: number(quantity)
+        range: [21.5, 37.0]
         description: >
-          Length of tail in centimeters; second replicate measurement. Read
-          as text rather than a number because one value ("27,5") uses a
-          comma as the decimal separator.
-        examples: ["21.5", "27,5", "31.5", "37"]
+          Length of tail in centimeters; second replicate measurement.
 
       - name: tail_lgth_3
         type: number(quantity)
