@@ -10,6 +10,42 @@ tables:
   - name: otters
     source:
       parquet: otters.parquet
+    description: >
+      One row per individual otter. 4338 animals, of which 117 were measured
+      more than once.
+    columns:
+      - name: otter_no
+        type: string
+        constraints: [required, unique]
+        description: >
+          Identifier of each individual otter. Assigned by researchers with a
+          variety of naming conventions across locations and time. No
+          identifier is ever reused for a different animal.
+        examples: ["67001", "70066", "90-044", "KOD-04-135", "SW-155"]
+
+      - name: sex
+        type: enum
+        values: {M: Male, F: Female, U: Unknown}
+        description: >
+          Sex of otter.
+
+      - name: recap
+        type: enum
+        values:
+          '0': Captured only once
+          '1': Recaptured at least one time
+        description: >
+          Whether the otter was captured only once or recaptured at least one
+          time. Agrees with the number of rows in `measurements` for every
+          otter but SW-155, which is flagged as recaptured but has a single
+          capture recorded here.
+
+  - name: measurements
+    source:
+      parquet: measurements.parquet
+    description: >
+      One row per capture or collection event. An otter caught more than once
+      contributes several rows.
     columns:
       - name: measurement_id
         type: integer
@@ -23,27 +59,17 @@ tables:
         type: string
         constraints: [required]
         description: >
-          Identifier of each individual measured otter. Assigned by
-          researchers with a variety of naming conventions across locations
-          and time. One row per capture, so an otter recaptured later appears
-          more than once: 132 rows repeat an identifier used by an earlier
-          row. No identifier is ever reused for a different animal.
+          The otter that was captured or collected.
         examples: ["67001", "70066", "90-044", "KOD-04-135", "SW-155"]
-
-      - name: recap
-        type: enum
-        values:
-          '0': Captured only once
-          '1': Recaptured at least one time
-        description: >
-          Whether the measured otter was captured only once or recaptured at
-          least one time.
 
       - name: date
         type: date
         range: [1947-05-02, 2019-05-30]
         description: >
-          Date of capture or collection.
+          Date of capture or collection. Together with otter_no this
+          identifies a capture, except for KWK-59-162, whose post-captivity
+          re-weighing on 1959-05-13 appears to have kept the original capture
+          date rather than the date it was actually weighed.
 
       - name: location
         type: string
@@ -66,12 +92,6 @@ tables:
         description: >
           Longitude of capture or collection location in decimal degrees
           (WGS84).
-
-      - name: sex
-        type: enum
-        values: {M: Male, F: Female, U: Unknown}
-        description: >
-          Sex of otter.
 
       - name: weight
         type: number(quantity)
@@ -411,23 +431,26 @@ tables:
 
 relationships:
   - description: >
+      Links an otter to each time it was captured or collected.
+    cardinality: one-to-many
+    join: otters.otter_no = measurements.otter_no
+
+  - description: >
       Links a collection event to the fetuses found in the collected female.
     cardinality: one-to-many
-    join: otters.measurement_id = fetuses.measurement_id
+    join: measurements.measurement_id = fetuses.measurement_id
 
   - description: >
       Links a capture to the region and area of the place it happened.
     cardinality: many-to-one
-    join: otters.location = locations.location
+    join: measurements.location = locations.location
 
   - description: >
-      Links a female otter to her dependent pup's own record. Not all pups
-      have their own row (221 of 389 pup_number values match an otter_no).
-    cardinality: one-to-many
-    join: mother.otter_no = pup.pup_number
-    aliases:
-      mother: otters
-      pup: otters
+      Links a capture of a female accompanied by a dependent pup to the pup
+      itself. Not all pups were captured in their own right: 220 of the 387
+      distinct pup_number values match an otter_no.
+    cardinality: many-to-one
+    join: measurements.pup_number = otters.otter_no
 
 glossary:
   curvilinear length: >

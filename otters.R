@@ -67,6 +67,16 @@ stopifnot(!any(duplicated(locations$location)))
 locations <- locations[order(locations$location), ]
 otters[c("region", "area")] <- NULL
 
+# sex and recap describe the animal, not the capture, and are constant across
+# the 117 otters that were caught more than once. Everything else varies from
+# capture to capture, so it becomes a measurement.
+otter_cols <- c("otter_no", "sex", "recap")
+measurements <- otters[setdiff(names(otters), c("sex", "recap"))]
+otters <- unique(otters[otter_cols])
+stopifnot(!any(duplicated(otters$otter_no)))
+otters <- otters[order(otters$otter_no), ]
+
 write_parquet(otters, "otters.parquet")
-write_parquet(fetuses, "fetuses.parquet")
+write_parquet(measurements, "measurements.parquet")
 write_parquet(locations, "locations.parquet")
+write_parquet(fetuses, "fetuses.parquet")
