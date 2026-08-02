@@ -155,7 +155,39 @@ otters <- otters[order(otters$otter_no), ]
 
 measurements[c("pup_sex", "pup_wght", "pup_lgth", "pup_curvlgth")] <- NULL
 
+# Tail length, length and girth were each measured up to three times, but the
+# repeat columns are nearly empty: girth2 holds 4 values. Move the individual
+# measurements into their own table and leave the capture holding the mean.
+replicate_cols <- list(
+  tail_lgth = c("tail_lgth_1", "tail_lgth_2", "tail_lgth_3"),
+  lgth      = c("lgth1", "lgth2", "lgth3"),
+  girth     = c("girth1", "girth2")
+)
+replicates <- do.call(rbind, lapply(names(replicate_cols), function(quantity) {
+  cols <- replicate_cols[[quantity]]
+  long <- data.frame(
+    measurement_id = rep(measurements$measurement_id, times = length(cols)),
+    quantity = quantity,
+    replicate = rep(seq_along(cols), each = nrow(measurements)),
+    value = unlist(measurements[cols], use.names = FALSE)
+  )
+  long[!is.na(long$value), ]
+}))
+replicates <- replicates[order(replicates$measurement_id, replicates$quantity, replicates$replicate), ]
+row.names(replicates) <- NULL
+measurements[unlist(replicate_cols)] <- NULL
+
+# The mean is now the only version of each, so it can drop the mean_ prefix.
+# curve_lgth1 is the sole curvilinear measurement: curve_lgth2 is not a
+# replicate of it, so neither joins the replicates table.
+renames <- c(mean_tail_lgth = "tail_lgth", mean_lgth = "lgth",
+             mean_girth = "girth", curve_lgth1 = "curve_lgth",
+             curve_lgth2 = "curve_lgth_alt")
+names(measurements) <- ifelse(names(measurements) %in% names(renames),
+                              renames[names(measurements)], names(measurements))
+
 write_parquet(otters, "otters.parquet")
 write_parquet(measurements, "measurements.parquet")
 write_parquet(locations, "locations.parquet")
 write_parquet(fetuses, "fetuses.parquet")
+write_parquet(replicates, "replicates.parquet")

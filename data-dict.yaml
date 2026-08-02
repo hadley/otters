@@ -105,53 +105,12 @@ tables:
         description: >
           Weight of otter in kilograms.
 
-      - name: tail_lgth_1
-        type: number(quantity)
-        range: [15.5, 37.2]
-        description: >
-          Length of tail in centimeters; first replicate measurement.
-
-      - name: tail_lgth_2
-        type: number(quantity)
-        range: [21.5, 37.0]
-        description: >
-          Length of tail in centimeters; second replicate measurement.
-
-      - name: tail_lgth_3
-        type: number(quantity)
-        range: [22.0, 37.0]
-        description: >
-          Length of tail in centimeters; third replicate measurement.
-
-      - name: mean_tail_lgth
+      - name: tail_lgth
         type: number(quantity)
         range: [15.5, 37.0]
         description: >
-          Mean of the replicate tail lengths taken at this capture, in
-          centimeters to two decimal places. Two captures averaged a subset of
-          their replicates and one was left blank; all three were recomputed
-          during cleaning.
-
-      - name: lgth1
-        type: number(quantity)
-        range: [40.2, 148.2]
-        description: >
-          Length of otter including tail in centimeters; first replicate
-          measurement.
-
-      - name: lgth2
-        type: number(quantity)
-        range: [90.0, 146.5]
-        description: >
-          Length of otter including tail in centimeters; second replicate
-          measurement.
-
-      - name: lgth3
-        type: number(quantity)
-        range: [102.2, 143.7]
-        description: >
-          Length of otter including tail in centimeters; third replicate
-          measurement.
+          Length of tail in centimeters: the mean of the replicates taken at
+          this capture, which are in `replicates`.
 
       - name: curvilinear_correction
         type: enum
@@ -162,68 +121,56 @@ tables:
           Correction factor for lengths measured as curvilinear instead of
           standard length.
 
-      - name: mean_lgth
+      - name: lgth
         type: number(quantity)
         range: [40.2, 148.2]
         description: >
-          Mean of the replicate lengths taken at this capture, in centimeters
-          to two decimal places. The source recorded the mean across all of an
-          otter's captures on some repeat captures: of the 69 otters whose
-          lgth1 differs between captures, 20 carried an identical mean_lgth on
-          every one. Those were recomputed within the capture during cleaning.
-          Four captures have no replicates and record a length only here.
+          Length of otter including tail in centimeters: the mean of the
+          replicates taken at this capture, which are in `replicates`. Four
+          captures have no replicates and record a length only here.
 
       - name: true_standard_lgth
         type: number(quantity)
         range: [40.2, 155.9]
         description: >
           Length comparable across measuring protocols, in centimeters.
-          Standard-length captures take mean_lgth unchanged, since their
+          Standard-length captures take lgth unchanged, since their
           curvilinear_correction is 1. Curvilinear captures, which have no
-          mean_lgth, take curve_lgth1 times 0.974.
+          lgth, take curve_lgth times 0.974.
 
       - name: body_lgth
         type: number(quantity)
         range: [56.5, 115.2]
         description: >
           Body length not including tail, in centimeters. Exactly
-          true_standard_lgth - mean_tail_lgth, recorded only for the 401
-          captures where both are known.
+          true_standard_lgth - tail_lgth, recorded only for the 401 captures
+          where both are known.
 
-      - name: curve_lgth1
+      - name: curve_lgth
         type: number(quantity)
         range: [47.0, 160.0]
         description: >
-          Curvilinear length of otter including tail in centimeters; first
-          replicate measurement.
+          Curvilinear length of otter including tail in centimeters. Measured
+          once, so it has no replicates and does not appear in `replicates`.
 
-      - name: curve_lgth2
+      - name: curve_lgth_alt
         type: number(quantity)
         range: [111.5, 166.0]
         description: >
-          Curvilinear length of otter including tail in centimeters; second
-          replicate measurement.
+          Unidentified length in centimeters, named CURVE_LGTH2 in the source
+          as though it were a second curvilinear measurement, which it is not.
+          All 21 values come from a single field season, 2006-03-29 to
+          2006-04-08 at nknight and montague, and run 12 to 23 cm longer than
+          the same otter's curve_lgth. Against true_standard_lgth they range
+          from 1.14 to 1.22, where curve_lgth holds steady at 1.01 to 1.04.
+          What was measured is not recorded.
 
-      - name: girth1
+      - name: girth
         type: number(quantity)
         range: [29.5, 96.5]
         description: >
-          Circumference of chest at xiphoid in centimeters; first replicate
-          measurement.
-
-      - name: girth2
-        type: number(quantity)
-        range: [74.5, 78.0]
-        description: >
-          Circumference of chest at xiphoid in centimeters; second replicate
-          measurement.
-
-      - name: mean_girth
-        type: number(quantity)
-        range: [29.5, 96.5]
-        description: >
-          Mean of the replicate girths taken at this capture, in centimeters
-          to two decimal places.
+          Circumference of chest at xiphoid in centimeters: the mean of the
+          replicates taken at this capture, which are in `replicates`.
 
       - name: paw
         type: number(quantity)
@@ -340,6 +287,48 @@ tables:
         description: >
           Cause of death or capture method.
 
+  - name: replicates
+    source:
+      parquet: replicates.parquet
+    description: >
+      One row per individual measurement behind the tail_lgth, lgth and girth
+      of a capture. Only tail length was replicated in earnest: 287 of its 403
+      captures carry two or three, agreeing to a median of 0.5 cm. lgth was
+      repeated at 160 of 2269 captures and girth at 4 of 1052.
+    columns:
+      - name: measurement_id
+        type: integer
+        constraints: [required]
+        description: >
+          The capture or collection event at which the measurement was taken.
+
+      - name: quantity
+        type: enum
+        values:
+          tail_lgth: Length of tail, 15.5 to 37.2 cm
+          lgth: Length of otter including tail, 40.2 to 148.2 cm
+          girth: Circumference of chest at xiphoid, 29.5 to 96.5 cm
+        constraints: [required]
+        description: >
+          What was measured. The matching column in `measurements` holds the
+          mean of these values.
+
+      - name: replicate
+        type: number(ordinal)
+        constraints: [required]
+        range: [1, 3]
+        description: >
+          Which of the repeated measurements this is, numbered from 1 in the
+          order the source recorded them. girth never reaches 3.
+
+      - name: value
+        type: number(quantity)
+        constraints: [required]
+        range: [15.5, 148.2]
+        description: >
+          The measurement in centimeters, to one decimal place. See `quantity`
+          for the range each one spans.
+
   - name: locations
     source:
       parquet: locations.parquet
@@ -433,6 +422,13 @@ relationships:
       Links an otter to each time it was captured or collected.
     cardinality: one-to-many
     join: otters.otter_no = measurements.otter_no
+
+  - description: >
+      Links a capture to the individual measurements behind its tail_lgth,
+      lgth and girth. 2370 captures measured none of the three and have no
+      rows here.
+    cardinality: one-to-many
+    join: measurements.measurement_id = replicates.measurement_id
 
   - description: >
       Links a collection event to the fetuses found in the collected female.
