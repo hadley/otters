@@ -47,46 +47,11 @@ tables:
 
       - name: location
         type: string
+        constraints: [required]
         description: >
-          Place name of location of capture or collection. Derived from local
-          geographic place names.
+          Place of capture or collection. Derived from local geographic place
+          names. See `locations` for the region and area it sits in.
         examples: [adak, chiniak bay, kiska, SE - whale bay, yukon island]
-
-      - name: region
-        type: enum
-        values:
-          west aleutians: Western Aleutian Islands
-          east aleutians: Eastern Aleutian Islands
-          AK peninsula: Alaska Peninsula
-          kodiak: Kodiak Island
-          lower cook inlet: Lower Cook Inlet
-          PWS: Prince William Sound
-          SE: Southeast Alaska
-        description: >
-          Region within the state of capture or collection (may encompass
-          multiple areas).
-
-      - name: area
-        type: enum
-        values:
-          near islands: Near Island group
-          rats: Rat Island group
-          delarofs: Delarof Island group
-          andreanofs: Andreanof Island group
-          fox islands: Fox Island group
-          WAP: Western Alaska Peninsula
-          EAP: Eastern Alaska Peninsula
-          shuyak: Shuyak Island
-          afognak: Afognak Island
-          kodiak: Kodiak Island
-          kachemak: Kachemak Bay
-          WPWS: Western Prince William Sound
-          EPWS: Eastern Prince William Sound
-          NSE: Northern Southeast Alaska
-          CSE: Central Southeast Alaska
-          SSE: Southern Southeast Alaska
-        description: >
-          Area within the state of capture or collection.
 
       - name: lat
         type: number(quantity)
@@ -356,6 +321,55 @@ tables:
         description: >
           Cause of death or capture method.
 
+  - name: locations
+    source:
+      parquet: locations.parquet
+    description: >
+      One row per named place of capture or collection, giving the region and
+      area it belongs to.
+    columns:
+      - name: location
+        type: string
+        constraints: [required, unique]
+        description: >
+          Place name, as recorded in the capture records.
+        examples: [adak, chiniak bay, kiska, SE - whale bay, yukon island]
+
+      - name: region
+        type: enum
+        values:
+          west aleutians: Western Aleutian Islands
+          east aleutians: Eastern Aleutian Islands
+          AK peninsula: Alaska Peninsula
+          kodiak: Kodiak Island
+          lower cook inlet: Lower Cook Inlet
+          PWS: Prince William Sound
+          SE: Southeast Alaska
+        description: >
+          Region within the state (may encompass multiple areas).
+
+      - name: area
+        type: enum
+        values:
+          near islands: Near Island group
+          rats: Rat Island group
+          delarofs: Delarof Island group
+          andreanofs: Andreanof Island group
+          fox islands: Fox Island group
+          WAP: Western Alaska Peninsula
+          EAP: Eastern Alaska Peninsula
+          shuyak: Shuyak Island
+          afognak: Afognak Island
+          kodiak: Kodiak Island
+          kachemak: Kachemak Bay
+          WPWS: Western Prince William Sound
+          EPWS: Eastern Prince William Sound
+          NSE: Northern Southeast Alaska
+          CSE: Central Southeast Alaska
+          SSE: Southern Southeast Alaska
+        description: >
+          Area within the state.
+
   - name: fetuses
     source:
       parquet: fetuses.parquet
@@ -400,6 +414,11 @@ relationships:
       Links a collection event to the fetuses found in the collected female.
     cardinality: one-to-many
     join: otters.measurement_id = fetuses.measurement_id
+
+  - description: >
+      Links a capture to the region and area of the place it happened.
+    cardinality: many-to-one
+    join: otters.location = locations.location
 
   - description: >
       Links a female otter to her dependent pup's own record. Not all pups

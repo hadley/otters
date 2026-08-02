@@ -59,5 +59,14 @@ otters$measurement_id <- cumsum(!repeated)
 fetuses <- otters[otters$fetus_pres %in% c("Y", "M"), c("measurement_id", fetus_cols)]
 otters <- otters[!repeated, c("measurement_id", capture_cols)]
 
+# region and area describe the place, not the capture: each of the 68
+# locations falls in exactly one region and one area. Coordinates vary from
+# capture to capture within a location, so they stay put.
+locations <- unique(otters[c("location", "region", "area")])
+stopifnot(!any(duplicated(locations$location)))
+locations <- locations[order(locations$location), ]
+otters[c("region", "area")] <- NULL
+
 write_parquet(otters, "otters.parquet")
 write_parquet(fetuses, "fetuses.parquet")
+write_parquet(locations, "locations.parquet")
