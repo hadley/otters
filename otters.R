@@ -76,6 +76,52 @@ otters <- unique(otters[otter_cols])
 stopifnot(!any(duplicated(otters$otter_no)))
 otters <- otters[order(otters$otter_no), ]
 
+# A pup travelling with its mother was measured on her row: pup_wght, pup_lgth
+# and pup_curvlgth are the pup's own weight, true standard length and
+# curvilinear length. Where the pup was captured in its own right the same day
+# those numbers duplicate its record; otherwise they are the only trace of the
+# animal. Give every named pup a measurement of its own.
+
+# One female has her own id typed into pup_number, and one record measures a
+# pup nobody named. Both pups need an id we make up.
+measured <- with(measurements, !is.na(pup_wght) | !is.na(pup_lgth) | !is.na(pup_curvlgth))
+nameless <- measured &
+  (is.na(measurements$pup_number) | measurements$pup_number == measurements$otter_no)
+measurements$pup_number[nameless] <- paste0("synthetic-", seq_len(sum(nameless)))
+
+# The mother's copy is redundant only when the pup already has a row that day.
+new_pup <- !is.na(measurements$pup_number) &
+  !paste(measurements$pup_number, measurements$date) %in%
+    paste(measurements$otter_no, measurements$date)
+
+pups <- measurements[new_pup, ]
+carried <- c("date", "location", "lat", "long", "cause_of_death_capture_method")
+for (col in setdiff(names(pups), carried)) {
+  pups[[col]] <- pups[[col]][NA_integer_]  # blank, but keep the column's type
+}
+pups$otter_no <- measurements$pup_number[new_pup]
+pups$weight <- measurements$pup_wght[new_pup]
+pups$true_standard_lgth <- measurements$pup_lgth[new_pup]
+pups$curve_lgth1 <- measurements$pup_curvlgth[new_pup]
+pups$w_pup <- "D"
+pups$measurement_id <- max(measurements$measurement_id) + seq_len(nrow(pups))
+
+measurements <- rbind(measurements, pups)
+
+# Pups met only through their mother join the otter table; their sex was
+# recorded as pup_sex. recap follows from how many times they were measured.
+new_otters <- data.frame(
+  otter_no = measurements$pup_number[new_pup],
+  sex = measurements$pup_sex[new_pup]
+)
+new_otters <- unique(new_otters[!new_otters$otter_no %in% otters$otter_no, ])
+stopifnot(!any(duplicated(new_otters$otter_no)))
+new_otters$recap <- as.integer(table(pups$otter_no)[new_otters$otter_no] > 1)
+otters <- rbind(otters, new_otters)
+otters <- otters[order(otters$otter_no), ]
+
+measurements[c("pup_sex", "pup_wght", "pup_lgth", "pup_curvlgth")] <- NULL
+
 write_parquet(otters, "otters.parquet")
 write_parquet(measurements, "measurements.parquet")
 write_parquet(locations, "locations.parquet")

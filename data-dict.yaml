@@ -11,7 +11,7 @@ tables:
     source:
       parquet: otters.parquet
     description: >
-      One row per individual otter. 4338 animals, of which 117 were measured
+      One row per individual otter. 4507 animals, of which 113 were measured
       more than once.
     columns:
       - name: otter_no
@@ -20,7 +20,9 @@ tables:
         description: >
           Identifier of each individual otter. Assigned by researchers with a
           variety of naming conventions across locations and time. No
-          identifier is ever reused for a different animal.
+          identifier is ever reused for a different animal. Two pups were
+          measured but never named, and carry ids invented during cleaning:
+          synthetic-1 and synthetic-2.
         examples: ["67001", "70066", "90-044", "KOD-04-135", "SW-155"]
 
       - name: sex
@@ -37,20 +39,24 @@ tables:
         description: >
           Whether the otter was captured only once or recaptured at least one
           time. Agrees with the number of rows in `measurements` for every
-          otter but SW-155, which is flagged as recaptured but has a single
-          capture recorded here.
+          otter but two. SW-155 is flagged as recaptured but has a single
+          capture recorded here. SO-04-05a is flagged as captured once but has
+          two, because the row dated 2008-05-18 looks mislabelled: its weight
+          matches the pup SO-04-05 was carrying that day, which she recorded
+          as SO-04-05b.
 
   - name: measurements
     source:
       parquet: measurements.parquet
     description: >
       One row per capture or collection event. An otter caught more than once
-      contributes several rows.
+      contributes several rows. Includes 173 captures of dependent pups that
+      the source recorded only as extra columns on the mother's row.
     columns:
       - name: measurement_id
         type: integer
         constraints: [required, unique]
-        range: [1, 4470]
+        range: [1, 4643]
         description: >
           Identifier of each capture or collection event. Assigned when the
           data was cleaned; it has no meaning in the source files.
@@ -222,37 +228,18 @@ tables:
           'Y': With dependent pup
         description: >
           Whether an adult female was with a dependent pup at capture or
-          collection.
+          collection. Y without a pup_number means a pup was seen but not
+          identified; 251 captures are recorded that way and the pup has no
+          row of its own.
 
       - name: pup_number
         type: string
         description: >
-          Identifier of pup, if present and marked.
+          The dependent pup accompanying the otter at this capture. The pup's
+          own weight and length, which the source recorded on the mother's
+          row, are now a capture of the pup in its own right; see the
+          `measurements` to `otters` relationship below.
         examples: ["67002", "92-198", "KOD_04_121", "SO-08-20", "SO-98-50a"]
-
-      - name: pup_sex
-        type: enum
-        values: {F: Female, M: Male, U: Unknown}
-        description: >
-          Sex of pup.
-
-      - name: pup_wght
-        type: number(quantity)
-        range: [0.9, 28.0]
-        description: >
-          Weight of pup in kilograms.
-
-      - name: pup_lgth
-        type: number(quantity)
-        range: [45.8, 113.5]
-        description: >
-          Length of pup in centimeters.
-
-      - name: pup_curvlgth
-        type: number(quantity)
-        range: [47.0, 113.0]
-        description: >
-          Curvilinear length of pup in centimeters.
 
       - name: fetus_pres
         type: enum
@@ -447,8 +434,9 @@ relationships:
 
   - description: >
       Links a capture of a female accompanied by a dependent pup to the pup
-      itself. Not all pups were captured in their own right: 220 of the 387
-      distinct pup_number values match an otter_no.
+      itself. Every one of the 388 named pups now has a row in `otters`, and
+      the capture that measured it is the pup's own row in `measurements` with
+      the same date.
     cardinality: many-to-one
     join: measurements.pup_number = otters.otter_no
 
