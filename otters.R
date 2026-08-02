@@ -40,25 +40,38 @@ names(otters) <- tolower(gsub(".", "_", names(otters), fixed = TRUE))
 otters$state <- NULL
 otters$year <- NULL
 
-# mean_lgth is meant to be the mean of the replicate lengths, but on repeat
-# captures it sometimes holds the mean across all of an otter's captures
-# instead: of the 69 otters whose lgth1 differs between captures, 20 carry an
-# identical mean_lgth on every one. Recompute it within the capture. Four
-# captures record a length only as mean_lgth and keep the value they have.
-lgth_reps <- c("lgth1", "lgth2", "lgth3")
-replicated <- rowSums(!is.na(otters[lgth_reps])) > 0
-otters$mean_lgth[replicated] <- round(rowMeans(otters[lgth_reps], na.rm = TRUE), 1)[replicated]
+# The measurements are recorded to one decimal place and the means are kept to
+# two, which is exact for a mean of two and spares us guessing which way the
+# source rounded a half.
+
+# The stored means don't always average the replicates taken at the capture.
+# mean_lgth sometimes holds the mean across all of an otter's captures: of the
+# 69 otters whose lgth1 differs between captures, 20 carry an identical
+# mean_lgth on every one. Two tail means average a subset of their replicates
+# and one was left blank. Recompute all three from the capture's replicates.
+# Four captures record a length only as mean_lgth and keep what they have.
+mean_of <- list(
+  mean_tail_lgth = c("tail_lgth_1", "tail_lgth_2", "tail_lgth_3"),
+  mean_lgth      = c("lgth1", "lgth2", "lgth3"),
+  mean_girth     = c("girth1", "girth2")
+)
+for (mean_col in names(mean_of)) {
+  rep_cols <- mean_of[[mean_col]]
+  measured <- rowSums(!is.na(otters[rep_cols])) > 0
+  otters[[mean_col]][measured] <-
+    round(rowMeans(otters[rep_cols], na.rm = TRUE), 2)[measured]
+}
 
 # Standard-length captures take their true standard length from mean_lgth, so
 # it follows. Curvilinear ones derive it from curve_lgth1 and are left alone.
 standard <- !is.na(otters$mean_lgth)
 otters$true_standard_lgth[standard] <-
-  round(otters$mean_lgth * otters$curvilinear_correction, 1)[standard]
+  round(otters$mean_lgth * otters$curvilinear_correction, 2)[standard]
 
 # body_lgth is the true standard length less the tail.
 tailed <- !is.na(otters$true_standard_lgth) & !is.na(otters$mean_tail_lgth)
 otters$body_lgth[tailed] <-
-  round(otters$true_standard_lgth - otters$mean_tail_lgth, 1)[tailed]
+  round(otters$true_standard_lgth - otters$mean_tail_lgth, 2)[tailed]
 
 # A female carrying more than one fetus gets one row per fetus, with every
 # other column repeated identically. Give each capture event an id, then move

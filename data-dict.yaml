@@ -127,7 +127,10 @@ tables:
         type: number(quantity)
         range: [15.5, 37.0]
         description: >
-          Mean of replicate tail length measurements in centimeters.
+          Mean of the replicate tail lengths taken at this capture, in
+          centimeters to two decimal places. Two captures averaged a subset of
+          their replicates and one was left blank; all three were recomputed
+          during cleaning.
 
       - name: lgth1
         type: number(quantity)
@@ -163,11 +166,12 @@ tables:
         type: number(quantity)
         range: [40.2, 148.2]
         description: >
-          Mean of the replicate lengths taken at this capture, in centimeters,
-          to one decimal place. The source recorded the mean across all of an
-          otter's captures on some repeat captures; those 80 values were
-          recomputed within the capture during cleaning. Four captures have no
-          replicates and record a length only here.
+          Mean of the replicate lengths taken at this capture, in centimeters
+          to two decimal places. The source recorded the mean across all of an
+          otter's captures on some repeat captures: of the 69 otters whose
+          lgth1 differs between captures, 20 carried an identical mean_lgth on
+          every one. Those were recomputed within the capture during cleaning.
+          Four captures have no replicates and record a length only here.
 
       - name: true_standard_lgth
         type: number(quantity)
@@ -183,7 +187,7 @@ tables:
         range: [56.5, 115.2]
         description: >
           Body length not including tail, in centimeters. Exactly
-          true_standard_lgth - mean_tail_lgth, recorded only for the 400
+          true_standard_lgth - mean_tail_lgth, recorded only for the 401
           captures where both are known.
 
       - name: curve_lgth1
@@ -218,7 +222,8 @@ tables:
         type: number(quantity)
         range: [29.5, 96.5]
         description: >
-          Mean of replicate girth measurements in centimeters.
+          Mean of the replicate girths taken at this capture, in centimeters
+          to two decimal places.
 
       - name: paw
         type: number(quantity)
