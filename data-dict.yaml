@@ -16,7 +16,7 @@ tables:
     columns:
       - name: otter_no
         type: string
-        constraints: [required, unique]
+        constraints: [primary_key]
         description: >
           Identifier of each individual otter. Assigned by researchers with a
           variety of naming conventions across locations and time. No
@@ -54,16 +54,17 @@ tables:
       the source recorded only as extra columns on the mother's row.
     columns:
       - name: measurement_id
-        type: integer
-        constraints: [required, unique]
-        range: [1, 4643]
+        type: number(id)
+        constraints: [primary_key]
         description: >
-          Identifier of each capture or collection event. Assigned when the
-          data was cleaned; it has no meaning in the source files.
+          Identifier of each capture or collection event, running from 1 to
+          4643. Assigned when the data was cleaned; it has no meaning in the
+          source files.
+        examples: [1, 1200, 2500, 4000, 4643]
 
       - name: otter_no
         type: string
-        constraints: [required]
+        constraints: [required, foreign_key]
         description: >
           The otter that was captured or collected.
         examples: ["67001", "70066", "90-044", "KOD-04-135", "SW-155"]
@@ -79,7 +80,7 @@ tables:
 
       - name: location
         type: string
-        constraints: [required]
+        constraints: [required, foreign_key]
         description: >
           Place of capture or collection. Derived from local geographic place
           names. See `locations` for the region and area it sits in.
@@ -87,14 +88,14 @@ tables:
 
       - name: lat
         type: number(quantity)
-        range: [51.37, 60.71]
+        range: [51.3721, 60.7025]
         description: >
           Latitude of capture or collection location in decimal degrees
           (WGS84).
 
       - name: long
         type: number(quantity)
-        range: [-178.97, 179.40]
+        range: [-178.964, 179.3966]
         description: >
           Longitude of capture or collection location in decimal degrees
           (WGS84).
@@ -193,6 +194,7 @@ tables:
 
       - name: pup_number
         type: string
+        constraints: [foreign_key]
         description: >
           The dependent pup accompanying the otter at this capture. The pup's
           own weight and length, which the source recorded on the mother's
@@ -297,10 +299,11 @@ tables:
       repeated at 160 of 2269 captures and girth at 4 of 1052.
     columns:
       - name: measurement_id
-        type: integer
-        constraints: [required]
+        type: number(id)
+        constraints: [primary_key, foreign_key]
         description: >
           The capture or collection event at which the measurement was taken.
+        examples: [2071, 2476, 3031, 3686, 4397]
 
       - name: quantity
         type: enum
@@ -308,14 +311,14 @@ tables:
           tail_lgth: Length of tail, 15.5 to 37.2 cm
           lgth: Length of otter including tail, 40.2 to 148.2 cm
           girth: Circumference of chest at xiphoid, 29.5 to 96.5 cm
-        constraints: [required]
+        constraints: [primary_key]
         description: >
           What was measured. The matching column in `measurements` holds the
           mean of these values.
 
       - name: replicate
         type: number(ordinal)
-        constraints: [required]
+        constraints: [primary_key]
         range: [1, 3]
         description: >
           Which of the repeated measurements this is, numbered from 1 in the
@@ -338,7 +341,7 @@ tables:
     columns:
       - name: location
         type: string
-        constraints: [required, unique]
+        constraints: [primary_key]
         description: >
           Place name, as recorded in the capture records.
         examples: [adak, chiniak bay, kiska, SE - whale bay, yukon island]
@@ -386,14 +389,15 @@ tables:
       more than one contributes several rows.
     columns:
       - name: measurement_id
-        type: integer
-        constraints: [required]
+        type: number(id)
+        constraints: [primary_key, foreign_key]
         description: >
           The capture or collection event at which the fetus was found.
+        examples: [15, 759, 1329, 1830, 3696]
 
       - name: fetus_num
         type: number(ordinal)
-        constraints: [required]
+        constraints: [primary_key]
         range: [1, 3]
         description: >
           Index distinguishing the fetuses found at one collection, not a
