@@ -11,14 +11,23 @@ tables:
     source:
       parquet: otters.parquet
     columns:
+      - name: measurement_id
+        type: integer
+        constraints: [required, unique]
+        range: [1, 4470]
+        description: >
+          Identifier of each capture or collection event. Assigned when the
+          data was cleaned; it has no meaning in the source files.
+
       - name: otter_no
         type: string
         constraints: [required]
         description: >
           Identifier of each individual measured otter. Assigned by
           researchers with a variety of naming conventions across locations
-          and time. Not unique: 140 rows repeat an identifier used by an
-          earlier row.
+          and time. One row per capture, so an otter recaptured later appears
+          more than once: 132 rows repeat an identifier used by an earlier
+          row. No identifier is ever reused for a different animal.
         examples: ["67001", "70066", "90-044", "KOD-04-135", "SW-155"]
 
       - name: recap
@@ -267,35 +276,9 @@ tables:
           'Y': Fetus present
           'M': Multiple fetuses present
         description: >
-          Whether fetus was present at time of collection.
-
-      - name: fetus_num
-        type: number(ordinal)
-        range: [0, 3]
-        description: >
-          Index of the fetus described by this row, not a count. 0 when no
-          fetus is present and 1 for a single fetus, but a female carrying
-          multiple fetuses gets one row per fetus, numbered 1, 2, 3; the
-          non-fetus columns are repeated identically across those rows. Six
-          females account for the 8 extra rows.
-
-      - name: fetus_sex
-        type: enum
-        values: {M: Male, F: Female, U: Unknown}
-        description: >
-          Sex of fetus.
-
-      - name: fetus_wt
-        type: number(quantity)
-        range: [0.1, 2112.0]
-        description: >
-          Weight of fetus in grams.
-
-      - name: fetus_lth
-        type: number(quantity)
-        range: [0.3, 65.0]
-        description: >
-          Length of fetus in centimeters.
+          Whether fetus was present at time of collection. Agrees exactly with
+          the number of matching rows in `fetuses`: none for N, one for Y, and
+          two or three for M.
 
       - name: fe_rep_con
         type: enum
@@ -373,7 +356,51 @@ tables:
         description: >
           Cause of death or capture method.
 
+  - name: fetuses
+    source:
+      parquet: fetuses.parquet
+    description: >
+      One row per fetus found in a collected female, so a female carrying
+      more than one contributes several rows.
+    columns:
+      - name: measurement_id
+        type: integer
+        constraints: [required]
+        description: >
+          The capture or collection event at which the fetus was found.
+
+      - name: fetus_num
+        type: number(ordinal)
+        constraints: [required]
+        range: [1, 3]
+        description: >
+          Index distinguishing the fetuses found at one collection, not a
+          count. Numbered from 1 in no meaningful order.
+
+      - name: fetus_sex
+        type: enum
+        values: {M: Male, F: Female, U: Unknown}
+        description: >
+          Sex of fetus.
+
+      - name: fetus_wt
+        type: number(quantity)
+        range: [0.1, 2112.0]
+        description: >
+          Weight of fetus in grams.
+
+      - name: fetus_lth
+        type: number(quantity)
+        range: [0.3, 65.0]
+        description: >
+          Length of fetus in centimeters.
+
 relationships:
+  - description: >
+      Links a collection event to the fetuses found in the collected female.
+    cardinality: one-to-many
+    join: otters.measurement_id = fetuses.measurement_id
+
   - description: >
       Links a female otter to her dependent pup's own record. Not all pups
       have their own row (221 of 389 pup_number values match an otter_no).

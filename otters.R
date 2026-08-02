@@ -40,4 +40,24 @@ names(otters) <- tolower(gsub(".", "_", names(otters), fixed = TRUE))
 otters$state <- NULL
 otters$year <- NULL
 
+# A female carrying more than one fetus gets one row per fetus, with every
+# other column repeated identically. Give each capture event an id, then move
+# the per-fetus columns into their own table.
+fetus_cols <- c("fetus_num", "fetus_sex", "fetus_wt", "fetus_lth")
+capture_cols <- setdiff(names(otters), fetus_cols)
+
+# Numbering the events with cumsum() relies on each repeated row sitting
+# directly below the row it repeats.
+repeated <- duplicated(otters[capture_cols])
+stopifnot(isTRUE(all.equal(
+  otters[which(repeated), capture_cols],
+  otters[which(repeated) - 1L, capture_cols],
+  check.attributes = FALSE
+)))
+otters$measurement_id <- cumsum(!repeated)
+
+fetuses <- otters[otters$fetus_pres %in% c("Y", "M"), c("measurement_id", fetus_cols)]
+otters <- otters[!repeated, c("measurement_id", capture_cols)]
+
 write_parquet(otters, "otters.parquet")
+write_parquet(fetuses, "fetuses.parquet")
