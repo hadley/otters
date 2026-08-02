@@ -40,6 +40,26 @@ names(otters) <- tolower(gsub(".", "_", names(otters), fixed = TRUE))
 otters$state <- NULL
 otters$year <- NULL
 
+# mean_lgth is meant to be the mean of the replicate lengths, but on repeat
+# captures it sometimes holds the mean across all of an otter's captures
+# instead: of the 69 otters whose lgth1 differs between captures, 20 carry an
+# identical mean_lgth on every one. Recompute it within the capture. Four
+# captures record a length only as mean_lgth and keep the value they have.
+lgth_reps <- c("lgth1", "lgth2", "lgth3")
+replicated <- rowSums(!is.na(otters[lgth_reps])) > 0
+otters$mean_lgth[replicated] <- round(rowMeans(otters[lgth_reps], na.rm = TRUE), 1)[replicated]
+
+# Standard-length captures take their true standard length from mean_lgth, so
+# it follows. Curvilinear ones derive it from curve_lgth1 and are left alone.
+standard <- !is.na(otters$mean_lgth)
+otters$true_standard_lgth[standard] <-
+  round(otters$mean_lgth * otters$curvilinear_correction, 1)[standard]
+
+# body_lgth is the true standard length less the tail.
+tailed <- !is.na(otters$true_standard_lgth) & !is.na(otters$mean_tail_lgth)
+otters$body_lgth[tailed] <-
+  round(otters$true_standard_lgth - otters$mean_tail_lgth, 1)[tailed]
+
 # A female carrying more than one fetus gets one row per fetus, with every
 # other column repeated identically. Give each capture event an id, then move
 # the per-fetus columns into their own table.

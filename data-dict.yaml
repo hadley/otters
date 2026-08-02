@@ -163,21 +163,28 @@ tables:
         type: number(quantity)
         range: [40.2, 148.2]
         description: >
-          Mean of replicate otter length measurements in centimeters.
+          Mean of the replicate lengths taken at this capture, in centimeters,
+          to one decimal place. The source recorded the mean across all of an
+          otter's captures on some repeat captures; those 80 values were
+          recomputed within the capture during cleaning. Four captures have no
+          replicates and record a length only here.
 
       - name: true_standard_lgth
         type: number(quantity)
         range: [40.2, 155.9]
         description: >
-          Mean length multiplied by curvilinear correction factor, in
-          centimeters.
+          Length comparable across measuring protocols, in centimeters.
+          Standard-length captures take mean_lgth unchanged, since their
+          curvilinear_correction is 1. Curvilinear captures, which have no
+          mean_lgth, take curve_lgth1 times 0.974.
 
       - name: body_lgth
         type: number(quantity)
         range: [56.5, 115.2]
         description: >
-          Body length not including tail (true_standard_lgth -
-          mean_tail_lgth) in centimeters.
+          Body length not including tail, in centimeters. Exactly
+          true_standard_lgth - mean_tail_lgth, recorded only for the 400
+          captures where both are known.
 
       - name: curve_lgth1
         type: number(quantity)
