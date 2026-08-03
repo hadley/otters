@@ -207,9 +207,9 @@ tables:
           UNI: Unimplanted pregnant
           ANE: Anestrous
           EST: In estrous
-          POS: Undocumented
-          PRO: Undocumented
-          FAI: Undocumented
+          POS: Postpartum
+          PRO: In proestrus
+          FAI: Pregnancy failure (resorption or possible abortion)
         description: >
           Reproductive condition recorded for a female.
 
@@ -226,7 +226,7 @@ tables:
           U: Unknown
           NPP: Not palpably pregnant at capture
           P: Fetus present at collection or palpably pregnant at capture
-          PP: Undocumented
+          PP: Not documented in the source metadata
         description: >
           Pregnancy status at capture or collection.
 
