@@ -40,6 +40,21 @@ names(otters) <- tolower(gsub(".", "_", names(otters), fixed = TRUE))
 otters$state <- NULL
 otters$year <- NULL
 
+# recap is a 0/1 flag.
+otters$recap <- otters$recap == 1
+
+# age_category and cause_of_death_capture_method hold numeric codes for
+# categories: the age codes stand in for class midpoints, and the capture codes
+# aren't even consecutive. Neither is worth doing arithmetic on, so spell them
+# out.
+otters$age_category <- unname(c(
+  "0" = "<1", "1.5" = "1-2", "7" = "3-10", "13" = ">10"
+)[as.character(otters$age_category)])
+
+otters$cause_of_death_capture_method <- unname(c(
+  "0" = "live capture", "1" = "harvest", "4" = "captivity", "5" = "beach"
+)[as.character(otters$cause_of_death_capture_method)])
+
 # The measurements are recorded to one decimal place and the means are kept to
 # two, which is exact for a mean of two and spares us guessing which way the
 # source rounded a half.
@@ -67,6 +82,11 @@ for (mean_col in names(mean_of)) {
 standard <- !is.na(otters$mean_lgth)
 otters$true_standard_lgth[standard] <-
   round(otters$mean_lgth * otters$curvilinear_correction, 2)[standard]
+
+# The factor has now done its work, so the only thing left for the column to
+# say is which protocol the length was measured with.
+otters$curvilinear_correction <- otters$curvilinear_correction == 0.974
+names(otters)[names(otters) == "curvilinear_correction"] <- "curvilinear"
 
 # body_lgth is the true standard length less the tail.
 tailed <- !is.na(otters$true_standard_lgth) & !is.na(otters$mean_tail_lgth)
@@ -149,7 +169,7 @@ new_otters <- data.frame(
 )
 new_otters <- unique(new_otters[!new_otters$otter_no %in% otters$otter_no, ])
 stopifnot(!any(duplicated(new_otters$otter_no)))
-new_otters$recap <- as.integer(table(pups$otter_no)[new_otters$otter_no] > 1)
+new_otters$recap <- unname(table(pups$otter_no)[new_otters$otter_no] > 1)
 otters <- rbind(otters, new_otters)
 otters <- otters[order(otters$otter_no), ]
 
